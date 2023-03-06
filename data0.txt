@@ -1,1 +1,0 @@
-new script with promise so await i try 
