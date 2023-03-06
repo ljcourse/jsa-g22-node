@@ -11,12 +11,12 @@ const studenti = [
     { ime: 'Stanko', prosek: 7.2, grad: 'Strumica' }
 ];
 
-//1.site studenti od skopje cie ime zavrsuva na a i imaat prosek nad 8 podredeni po ime rastecki
+// 1.site studenti od skopje cie ime zavrsuva na a i imaat prosek nad 8 podredeni po ime rastecki
 let studentiFilterSk = studenti.filter((s) => {
     return s.grad === 'Skopje' && s.ime.endsWith('a') && s.prosek > 7;
 }).sort((a, b) => {
-    if (a.ime < b.ime) return -1;
-    if (a.ime > b.ime) return 1;
+    if (a.ime < b.ime) return 1;
+    if (a.ime > b.ime) return -1;
     return 0;
 });
 
@@ -26,8 +26,8 @@ console.log(studentiFilterSk);
 let studentiFilterSk0 = studenti.filter((s) => {
     return s.grad !== "Skopje" && s.prosek > 9;
 }).sort((a, b) => {
-    if (a.prosek > b.prosek) return 1;
-    if (a.prosek < b.prosek) return -1;
+    if (a.prosek > b.prosek) return -1;
+    if (a.prosek < b.prosek) return 1;
     return 0;
 });
 
@@ -45,61 +45,36 @@ let studentiFilter0 = studenti.slice(0, 4).filter((s) => {
 console.log(studentiFilter0);
 
 //4.gradovi podredeni po grupna visina na prosek
-let gradoviSK = studenti.filter((s) => {
-    return s.grad === "Skopje";
-}).reduce((acc, s) => {
-    let pro = studenti.filter((s) => {
-        return s.grad === "Skopje";
-    });
-    return acc + s.prosek / pro.length;
-}, 0)
+let set = new Set(studenti.map(s => s.grad));
+// console.log(set);
+let res = Array.from(set).map(g => {
+    let sbroj = studenti.filter(s =>
+        s.grad === g
+    ).length
+    let svkupno = studenti.reduce((acc, v) => {
+        if (v.grad === g) {
+            return acc + v.prosek
+        }
+        return acc
+    }, 0);
+    return {
+        grad: g,
+        prosek: svkupno / sbroj
+    }
+}).sort((a, b) => {
+    if (a.prosek > b.prosek) return -1;
+    if (a.prosek < a.prosek) return 1;
+    if (a.prosek === b.prosek) return 0
+})
+console.log(res);
 
-let gradoviBit = studenti.filter((s) => {
-    return s.grad === "Bitola";
-}).reduce((acc, s) => {
-    let pro = studenti.filter((s) => {
-        return s.grad === "Bitola";
-    });
-    return acc + s.prosek / pro.length;
-}, 0);
-let gradoviKum = studenti.filter((s) => {
-    return s.grad === "Kumanovo";
-}).reduce((acc, s) => {
-    let pro = studenti.filter((s) => {
-        return s.grad === "Kumanovo";
-    });
-    return acc + s.prosek / pro.length;
-}, 0);
-let gradoviStr = studenti.filter((s) => {
-    return s.grad === "Strumica";
-}).reduce((acc, s) => {
-    let pro = studenti.filter((s) => {
-        return s.grad === "Strumica";
-    });
-    return acc + s.prosek / pro.length;
-}, 0);
-let gradoviTe = studenti.filter((s) => {
-    return s.grad === "Tetovo";
-}).reduce((acc, s) => {
-    let pro = studenti.filter((s) => {
-        return s.grad === "Tetovo";
-    });
-    return acc + s.prosek / pro.length;
-}, 0);
-let gradoviO = studenti.filter((s) => {
-    return s.grad === "Ohrid";
-}).reduce((acc, s) => {
-    let pro = studenti.filter((s) => {
-        return s.grad === "Ohrid";
-    });
-    return (acc + s.prosek / pro.length);
-}, 0);
 
-let grup = Array.of(gradoviSK, gradoviBit, gradoviKum, gradoviTe, gradoviO, gradoviStr).sort((a, b) => {
-    return a - b;
-});
-
-console.log(grup);
+let set0 = [];
+for (let i = 0; i < studenti.length; i++) {
+    if (!set0.includes(studenti[i].grad)) {
+        set0.push(studenti[i].grad);
+    }
+}
 
 //5.vkupen prosek na studenti cie ime zavrsuva na a nasproti site ostanati
 let studentiA = studenti.filter((s) => {
